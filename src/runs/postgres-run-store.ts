@@ -290,6 +290,7 @@ export function createPostgresRunStore(connectionString: string, opts?: { maxCla
           if (done) return;
           done = true;
           clearInterval(poll);
+          clearTimeout(timer);
           events.off(runId, onSettle);
           resolve(r);
         };
@@ -298,9 +299,13 @@ export function createPostgresRunStore(connectionString: string, opts?: { maxCla
         }
         events.once(runId, onSettle);
         const poll = setInterval(() => {
-          void getRun(runId).then((r) => {
-            if (r && isTerminal(r.status)) finish(r);
-          });
+          void getRun(runId)
+            .then((r) => {
+              if (r && isTerminal(r.status)) finish(r);
+            })
+            .catch((err: unknown) => {
+              console.error(`[postgres-run-store] waitFor poll for run ${runId} failed transiently:`, err);
+            });
         }, 250);
         poll.unref?.();
         const timer = setTimeout(() => {
