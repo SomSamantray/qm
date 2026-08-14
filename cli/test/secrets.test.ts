@@ -224,7 +224,7 @@ test("a Fly deployment relying on the implicit sprites default is required to co
   const awsImplicitBackend = makeConfig({ target: "aws", sandbox: { app: "acme-sb" } });
   assert.ok(
     !computedSecrets(awsImplicitBackend).some((secret) => secret.name === "SPRITES_TOKEN"),
-    "AWS's own implicit SANDBOX_BACKEND default resolves to \"aws\", never \"sprites\", so it must stay unaffected",
+    'AWS\'s own implicit SANDBOX_BACKEND default resolves to "aws", never "sprites", so it must stay unaffected',
   );
 });
 
