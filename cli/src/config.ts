@@ -217,9 +217,6 @@ export function sandboxImagePinErrors(config: QmConfig): Array<{ clause: string;
   ];
 }
 
-// Single source of truth for Fly's implicit SANDBOX_BACKEND default, so the actual
-// boot-time env (sandboxCoreEnv) and qm check's secret-requirement resolution
-// (TARGET_ENV_DEFAULTS.fly in target-env-defaults.ts) can't drift apart again (#423).
 export function flyImplicitSandboxBackend(config: QmConfig): string | undefined {
   return config.sandbox?.backend ?? (config.target === "fly" && config.sandbox?.app ? "sprites" : undefined);
 }
