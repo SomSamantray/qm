@@ -231,6 +231,8 @@ export function sandboxCoreEnv(
     if (violation) throw new CliError(violation.message, { clause: violation.clause });
     env.FLY_SANDBOX_APP_NAME = sb.app;
     env.FLY_BASE_IMAGE = sb.image;
+    // Mirrored by TARGET_ENV_DEFAULTS.fly in target-env-defaults.ts, which needs the
+    // same default so `qm check` requires SPRITES_TOKEN when this implies "sprites".
     const backend = sb.backend ?? (config.target === "fly" ? "sprites" : undefined);
     if (backend) env.SANDBOX_BACKEND = backend;
   }

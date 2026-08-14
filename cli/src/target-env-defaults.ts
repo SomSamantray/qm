@@ -17,7 +17,14 @@ const AWS_RENDER_ENV_DEFAULTS: Readonly<Record<string, Readonly<Record<string, s
 
 export const TARGET_ENV_DEFAULTS: Record<Target, TargetEnvDefaults> = {
   docker: () => undefined,
-  fly: (_config, service, name) => FLY_TEMPLATE_ENV_DEFAULTS[service]?.[name],
+  fly: (config, service, name) => {
+    // Mirrors sandboxCoreEnv's SANDBOX_BACKEND default (config.ts:234) so `qm check`
+    // requires the same secrets a Fly deployment actually needs at boot time (#423).
+    if (service === "core" && name === "SANDBOX_BACKEND") {
+      return config.sandbox?.backend ?? (config.sandbox?.app ? "sprites" : undefined);
+    }
+    return FLY_TEMPLATE_ENV_DEFAULTS[service]?.[name];
+  },
   aws: (config, service, name) => {
     const rendered = AWS_RENDER_ENV_DEFAULTS[service]?.[name];
     if (rendered === undefined) return undefined;
